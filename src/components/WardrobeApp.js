@@ -1,37 +1,44 @@
 'use client'
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 const WARDROBES_DEFAULT = [
-  { id: 1, name: "After-Hours Assets", budget: 2000, accent: "#c9a84c" },
-  { id: 2, name: "The 203 Collection", budget: 2500, accent: "#7eb8d4" },
-  { id: 3, name: "The Greenwich Standard", budget: 3000, accent: "#8fbc8f" },
-  { id: 4, name: "Old Money Staples", budget: 4000, accent: "#c8a96e" },
-  { id: 5, name: "PSU 2nd & 3rd Quarter", budget: 1500, accent: "#849bcf" },
-  { id: 6, name: "Kennebunkport Classics", budget: 2800, accent: "#a8c4d4" },
-  { id: 7, name: "The Deacon's Suitcase", budget: 2200, accent: "#b5896a" },
-  { id: 8, name: "Move In Boulder", budget: 1800, accent: "#a0a8d4" },
-  { id: 9, name: "Winter Elevation", budget: 2600, accent: "#9ab5d4" },
-  { id: 10, name: "Buff Winterline", budget: 2000, accent: "#d4b896" },
-  { id: 11, name: "Hoosier Freeze", budget: 1800, accent: "#b89fd4" },
-  { id: 12, name: "Palm Shadow", budget: 2400, accent: "#6db89a" },
-  { id: 13, name: "Catalina Bloom", budget: 2200, accent: "#d496b8" },
-  { id: 14, name: "Chestnut Season", budget: 2000, accent: "#c87840" },
-  { id: 15, name: "Scarlet Walk", budget: 1900, accent: "#d46464" },
-  { id: 16, name: "Sixth Street Shift", budget: 2100, accent: "#7878d4" },
+  { id: 1, name: "After-Hours Assets", budget: 2000, accent: "#c9a84c", description: "Elevated evening wear — dark blazers, tailored trousers, polished shoes. Pieces that work from dinner to drinks." },
+  { id: 2, name: "The 203 Collection", budget: 2500, accent: "#7eb8d4", description: "East Coast prep meets modern fit. Chinos, OCBD shirts, quarter-zips, clean sneakers. The college weekend standard." },
+  { id: 3, name: "The Greenwich Standard", budget: 3000, accent: "#8fbc8f", description: "Connecticut old money — linen, navy, khaki. Timeless pieces built for longevity. Nothing trendy, everything classic." },
+  { id: 4, name: "Old Money Staples", budget: 4000, accent: "#c8a96e", description: "Investment pieces that last decades. Cashmere, leather, heritage brands. The foundation of a real wardrobe." },
+  { id: 5, name: "PSU 2nd & 3rd Quarter", budget: 1500, accent: "#849bcf", description: "Game day and campus casual. Comfortable, versatile pieces in navy and white. Looks good in the student section." },
+  { id: 6, name: "Kennebunkport Classics", budget: 2800, accent: "#a8c4d4", description: "Maine coastal prep — boat shoes, weathered canvas, light layers. Built for the dock and the clambake." },
+  { id: 7, name: "The Deacon's Suitcase", budget: 2200, accent: "#b5896a", description: "Southern gentleman meets prep school. Madras, seersucker, loafers. Warm weather formal with a relaxed edge." },
+  { id: 8, name: "Move In Boulder", budget: 1800, accent: "#a0a8d4", description: "Colorado casual — technical fabrics, earth tones, trail-ready. Looks good on the mountain and at the coffee shop." },
+  { id: 9, name: "Winter Elevation", budget: 2600, accent: "#9ab5d4", description: "Ski town style — flannels, shearling, heavyweight knits. Après-ski ready without looking like a catalog." },
+  { id: 10, name: "Buff Winterline", budget: 2000, accent: "#d4b896", description: "CU Boulder winter — neutral tones, layering pieces, warm outerwear. Campus-appropriate cold weather dressing." },
+  { id: 11, name: "Hoosier Freeze", budget: 1800, accent: "#b89fd4", description: "Indiana winter essentials — practical warmth with style. Puffers, wool coats, thermal layers that still look clean." },
+  { id: 12, name: "Palm Shadow", budget: 2400, accent: "#6db89a", description: "Florida coastal — linen shirts, resort shorts, sandals. Light, breathable fabrics in tropical neutrals and greens." },
+  { id: 13, name: "Catalina Bloom", budget: 2200, accent: "#d496b8", description: "California island weekend — relaxed pastels, light knits, casual footwear. Effortless warm weather dressing." },
+  { id: 14, name: "Chestnut Season", budget: 2000, accent: "#c87840", description: "Fall transition pieces — rich earth tones, corduroys, flannel, leather boots. Peak autumn dressing." },
+  { id: 15, name: "Scarlet Walk", budget: 1900, accent: "#d46464", description: "Ohio State game day and campus. Scarlet and grey palette, comfortable layers, casual footwear." },
+  { id: 16, name: "Sixth Street Shift", budget: 2100, accent: "#7878d4", description: "Austin night out — relaxed but intentional. Dark denim, graphic tees, boots. Music venue to rooftop bar." },
 ];
 
-const OCCASION_TAGS = ["Dinner", "Beach", "City", "Brunch", "Party", "Travel", "Hiking", "Date Night", "Game Day", "Formal", "Casual Friday", "Resort"];
-const SEASON_TAGS = ["Spring", "Summer", "Fall", "Winter", "All Season"];
-const VIBE_TAGS = ["Preppy", "Old Money", "Streetwear", "Coastal", "Minimalist", "Business Casual", "Athletic", "Boho", "Classic", "Trendy", "Rugged", "Luxe"];
-const COLOR_TAGS = ["Black", "White", "Navy", "Grey", "Beige", "Brown", "Olive", "Burgundy", "Camel", "Cream", "Forest Green", "Sky Blue", "Rust", "Blush", "Charcoal"];
-const BRAND_TAGS = ["COS", "ARKET", "ASKET", "Buck Mason", "Taylor Stitch", "Club Monaco", "Faherty", "Marine Layer", "J.Crew", "Banana Republic", "Bonobos", "Lululemon", "Vuori", "Rhone", "Peter Millar", "Rhoback", "Patagonia", "Levi's", "Ralph Lauren", "Uniqlo", "Other"];
+const DEFAULT_TAGS = {
+  occasion: ["Dinner", "Beach", "City", "Brunch", "Party", "Travel", "Hiking", "Date Night", "Game Day", "Formal", "Casual Friday", "Resort"],
+  season: ["Spring", "Summer", "Fall", "Winter", "All Season"],
+  vibe: ["Preppy", "Old Money", "Streetwear", "Coastal", "Minimalist", "Business Casual", "Athletic", "Boho", "Classic", "Trendy", "Rugged", "Luxe"],
+  color: ["Black", "White", "Navy", "Grey", "Beige", "Brown", "Olive", "Burgundy", "Camel", "Cream", "Forest Green", "Sky Blue", "Rust", "Blush", "Charcoal"],
+  brand: ["COS", "ARKET", "ASKET", "Buck Mason", "Taylor Stitch", "Club Monaco", "Faherty", "Marine Layer", "J.Crew", "Banana Republic", "Bonobos", "Lululemon", "Vuori", "Rhone", "Peter Millar", "Rhoback", "Patagonia", "Levi's", "Ralph Lauren", "Uniqlo", "Other"],
+};
+
+const ACCENT_COLORS = ["#c9a84c","#7eb8d4","#8fbc8f","#c8a96e","#849bcf","#a8c4d4","#b5896a","#a0a8d4","#9ab5d4","#d4b896","#b89fd4","#6db89a","#d496b8","#c87840","#d46464","#7878d4","#e8e4dc","#c87878"];
 const ITEM_TYPES = ["Top", "Bottom", "Outerwear", "Shoes", "Accessory", "Bag", "Swimwear", "Suit", "Dress"];
-const BLANK_ITEM = { name: "", price: "", type: "Top", url: "", image: "", occasion: [], season: [], vibe: [], color: [], brand: [], wardrobeId: null, notes: "" };
+const BLANK_ITEM = { name: "", price: "", type: "Top", url: "", image: "", occasion: [], season: [], vibe: [], color: [], brand: [], wardrobeId: null };
+const BLANK_COLLECTION = { name: "", budget: "", accent: "#c9a84c", description: "" };
+const TAG_LABELS = { occasion: "Occasion", season: "Season", vibe: "Vibe", color: "Color", brand: "Brand" };
 
 export default function WardrobeApp() {
   const [wardrobes, setWardrobes] = useState(WARDROBES_DEFAULT);
   const [items, setItems] = useState([]);
+  const [customTags, setCustomTags] = useState(DEFAULT_TAGS);
   const [loaded, setLoaded] = useState(false);
   const [activeWardrobe, setActiveWardrobe] = useState(null);
   const [showAddItem, setShowAddItem] = useState(false);
@@ -46,28 +53,31 @@ export default function WardrobeApp() {
   const [editingBudgetId, setEditingBudgetId] = useState(null);
   const [budgetDraft, setBudgetDraft] = useState("");
   const [toast, setToast] = useState(null);
+  const [showCollectionModal, setShowCollectionModal] = useState(false);
+  const [editingCollection, setEditingCollection] = useState(null);
+  const [newCollection, setNewCollection] = useState({ ...BLANK_COLLECTION });
+  const [confirmDelete, setConfirmDelete] = useState(null);
+  const [editingDescription, setEditingDescription] = useState(null);
+  const [descDraft, setDescDraft] = useState("");
+  // Tag management
+  const [showTagManager, setShowTagManager] = useState(false);
+  const [tagDrafts, setTagDrafts] = useState({});
 
-  // Load from localStorage
   useEffect(() => {
     try {
-      const savedWardrobes = localStorage.getItem("dc-wardrobes");
-      const savedItems = localStorage.getItem("dc-items");
-      if (savedWardrobes) setWardrobes(JSON.parse(savedWardrobes));
-      if (savedItems) setItems(JSON.parse(savedItems));
+      const sw = localStorage.getItem("dc-wardrobes");
+      const si = localStorage.getItem("dc-items");
+      const st = localStorage.getItem("dc-tags");
+      if (sw) setWardrobes(JSON.parse(sw));
+      if (si) setItems(JSON.parse(si));
+      if (st) setCustomTags(JSON.parse(st));
     } catch (e) {}
     setLoaded(true);
   }, []);
 
-  // Save to localStorage on change
-  useEffect(() => {
-    if (!loaded) return;
-    localStorage.setItem("dc-wardrobes", JSON.stringify(wardrobes));
-  }, [wardrobes, loaded]);
-
-  useEffect(() => {
-    if (!loaded) return;
-    localStorage.setItem("dc-items", JSON.stringify(items));
-  }, [items, loaded]);
+  useEffect(() => { if (!loaded) return; localStorage.setItem("dc-wardrobes", JSON.stringify(wardrobes)); }, [wardrobes, loaded]);
+  useEffect(() => { if (!loaded) return; localStorage.setItem("dc-items", JSON.stringify(items)); }, [items, loaded]);
+  useEffect(() => { if (!loaded) return; localStorage.setItem("dc-tags", JSON.stringify(customTags)); }, [customTags, loaded]);
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(null), 2200); };
   const wardrobeItems = (wId) => items.filter(i => i.wardrobeId === wId);
@@ -88,8 +98,7 @@ export default function WardrobeApp() {
     if (!url?.startsWith("http")) { setUrlError("Please enter a valid URL starting with http"); return; }
     setFetchingUrl(true); setUrlError("");
     try {
-      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-      const res = await fetch(proxyUrl);
+      const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
       const data = await res.json();
       const doc = new DOMParser().parseFromString(data.contents, "text/html");
       const meta = (p) => doc.querySelector(`meta[property="${p}"]`)?.content || doc.querySelector(`meta[name="${p}"]`)?.content || "";
@@ -97,7 +106,7 @@ export default function WardrobeApp() {
       const image = meta("og:image") || meta("twitter:image") || "";
       const price = meta("product:price:amount") || meta("og:price:amount") || "";
       const domain = new URL(url).hostname.replace("www.", "");
-      const detectedBrand = BRAND_TAGS.find(b => domain.toLowerCase().includes(b.toLowerCase().replace(/\s/g, ""))) || "";
+      const detectedBrand = customTags.brand.find(b => domain.toLowerCase().includes(b.toLowerCase().replace(/\s/g, ""))) || "";
       setNewItem(prev => ({ ...prev, url, name: title.split("|")[0].split(" – ")[0].trim().slice(0, 60) || prev.name, image, price: price ? parseFloat(price).toFixed(0) : prev.price, brand: detectedBrand ? [detectedBrand] : prev.brand }));
     } catch (e) { setUrlError("Couldn't auto-fetch — fill in details manually"); }
     setFetchingUrl(false);
@@ -124,6 +133,46 @@ export default function WardrobeApp() {
   const toggleOutfitPick = (item) => setOutfitPicks(prev => prev.find(i => i.id === item.id) ? prev.filter(i => i.id !== item.id) : [...prev, item]);
   const typeIcon = (type) => ({ Top: "👕", Bottom: "👖", Shoes: "👟", Outerwear: "🧥", Bag: "👜", Suit: "🤵", Dress: "👗", Swimwear: "🩱", Accessory: "✦" }[type] || "✦");
 
+  const saveCollection = () => {
+    if (!newCollection.name.trim()) return;
+    if (editingCollection) {
+      setWardrobes(prev => prev.map(w => w.id === editingCollection.id ? { ...w, ...newCollection, budget: Number(newCollection.budget) } : w));
+      showToast("Collection updated ✓");
+    } else {
+      setWardrobes(prev => [...prev, { ...newCollection, id: Date.now(), budget: Number(newCollection.budget) || 0 }]);
+      showToast("Collection created ✓");
+    }
+    setShowCollectionModal(false); setEditingCollection(null); setNewCollection({ ...BLANK_COLLECTION });
+  };
+
+  const startEditCollection = (w) => { setNewCollection({ name: w.name, budget: String(w.budget), accent: w.accent, description: w.description || "" }); setEditingCollection(w); setShowCollectionModal(true); };
+  const doDeleteCollection = () => { setItems(prev => prev.filter(i => i.wardrobeId !== confirmDelete.id)); setWardrobes(prev => prev.filter(w => w.id !== confirmDelete.id)); if (activeWardrobe === confirmDelete.id) setActiveWardrobe(null); setConfirmDelete(null); showToast("Collection deleted"); };
+  const saveDescription = (wId) => { setWardrobes(prev => prev.map(w => w.id === wId ? { ...w, description: descDraft } : w)); setEditingDescription(null); showToast("Description saved ✓"); };
+
+  // Tag management helpers
+  const openTagManager = () => {
+    const drafts = {};
+    Object.keys(customTags).forEach(k => { drafts[k] = customTags[k].join(", "); });
+    setTagDrafts(drafts);
+    setShowTagManager(true);
+  };
+
+  const addTag = (category, value) => {
+    const trimmed = value.trim();
+    if (!trimmed || customTags[category].includes(trimmed)) return;
+    setCustomTags(prev => ({ ...prev, [category]: [...prev[category], trimmed] }));
+    showToast(`"${trimmed}" added ✓`);
+  };
+
+  const removeTag = (category, value) => {
+    setCustomTags(prev => ({ ...prev, [category]: prev[category].filter(t => t !== value) }));
+    // Also remove from any items that have this tag
+    setItems(prev => prev.map(item => ({ ...item, [category]: (item[category] || []).filter(t => t !== value) })));
+    showToast(`"${value}" removed`);
+  };
+
+  const resetTagsToDefault = () => { setCustomTags(DEFAULT_TAGS); showToast("Tags reset to defaults ✓"); };
+
   if (!loaded) return (
     <div style={{ background: "#0a0a0c", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Georgia, serif", color: "#c9a84c", letterSpacing: "0.2em", fontSize: 12, textTransform: "uppercase" }}>
       Loading Davenport...
@@ -133,7 +182,6 @@ export default function WardrobeApp() {
   return (
     <div style={{ background: "#0a0a0c", minHeight: "100vh", color: "#e8e4dc", fontFamily: "Georgia, 'Times New Roman', serif" }}>
 
-      {/* Toast */}
       {toast && (
         <div style={{ position: "fixed", bottom: 24, left: "50%", transform: "translateX(-50%)", background: "#c9a84c", color: "#0a0a0c", padding: "10px 22px", borderRadius: 4, fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", zIndex: 999, textTransform: "uppercase" }}>
           {toast}
@@ -145,9 +193,21 @@ export default function WardrobeApp() {
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <span style={{ letterSpacing: "0.28em", fontSize: 12, color: "#c9a84c", textTransform: "uppercase", cursor: "pointer" }} onClick={() => { setActiveWardrobe(null); setOutfitMode(false); setOutfitPicks([]); }}>Davenport</span>
           <span style={{ width: 1, height: 16, background: "#222" }} />
-          <span style={{ letterSpacing: "0.15em", fontSize: 10, color: "#3a3a3a", textTransform: "uppercase" }}>Wardrobe</span>
+          <span style={{ letterSpacing: "0.15em", fontSize: 10, color: "#3a3a3a", textTransform: "uppercase" }}>Closet</span>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
+          {!activeWardrobe && (
+            <>
+              <button onClick={openTagManager}
+                style={{ padding: "5px 12px", borderRadius: 3, border: "1px solid #1e1e24", background: "none", color: "#555", cursor: "pointer", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                Manage Tags
+              </button>
+              <button onClick={() => { setShowCollectionModal(true); setEditingCollection(null); setNewCollection({ ...BLANK_COLLECTION }); }}
+                style={{ padding: "5px 14px", borderRadius: 3, border: "none", background: "#c9a84c", color: "#0a0a0c", cursor: "pointer", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 700 }}>
+                + New Collection
+              </button>
+            </>
+          )}
           {activeWardrobe && <>
             <button onClick={() => { setOutfitMode(!outfitMode); setOutfitPicks([]); }}
               style={{ padding: "5px 12px", borderRadius: 3, border: `1px solid ${outfitMode ? "#c9a84c" : "#1e1e24"}`, background: outfitMode ? "#c9a84c15" : "none", color: outfitMode ? "#c9a84c" : "#555", cursor: "pointer", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase" }}>
@@ -177,9 +237,7 @@ export default function WardrobeApp() {
               <div style={{ fontSize: 9, color: "#555", marginTop: 2, maxWidth: 48, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.name}</div>
             </div>
           ))}
-          <div style={{ marginLeft: "auto", flexShrink: 0, fontSize: 12, color: "#888" }}>
-            Total: <span style={{ color: "#c9a84c" }}>${outfitPicks.reduce((s, i) => s + Number(i.price || 0), 0).toLocaleString()}</span>
-          </div>
+          <div style={{ marginLeft: "auto", flexShrink: 0, fontSize: 12, color: "#888" }}>Total: <span style={{ color: "#c9a84c" }}>${outfitPicks.reduce((s, i) => s + Number(i.price || 0), 0).toLocaleString()}</span></div>
           <button onClick={() => setOutfitPicks([])} style={{ background: "none", border: "1px solid #222", color: "#444", borderRadius: 3, padding: "4px 10px", cursor: "pointer", fontSize: 10, flexShrink: 0 }}>Clear</button>
         </div>
       )}
@@ -205,7 +263,7 @@ export default function WardrobeApp() {
         {!activeWardrobe && (
           <div>
             <div style={{ fontSize: 10, color: "#3a3a3a", letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 16 }}>All Collections</div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(290px, 1fr))", gap: 1, border: "1px solid #1a1a20", borderRadius: 4, overflow: "hidden" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 1, border: "1px solid #1a1a20", borderRadius: 4, overflow: "hidden" }}>
               {wardrobes.map((w) => {
                 const spend = wardrobeSpend(w.id);
                 const pct = budgetPct(w.id);
@@ -214,26 +272,49 @@ export default function WardrobeApp() {
                   <div key={w.id} style={{ background: "#0d0d10", padding: "20px 22px", borderRight: "1px solid #1a1a20", borderBottom: "1px solid #1a1a20", transition: "background 0.18s" }}
                     onMouseEnter={e => e.currentTarget.style.background = "#111116"}
                     onMouseLeave={e => e.currentTarget.style.background = "#0d0d10"}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
-                      <div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
+                      <div style={{ flex: 1 }}>
                         <div style={{ width: 5, height: 5, borderRadius: "50%", background: w.accent, marginBottom: 7 }} />
                         <div style={{ fontSize: 13, color: "#e8e4dc", marginBottom: 2 }}>{w.name}</div>
                         <div style={{ fontSize: 10, color: "#3a3a3a" }}>{wItems.length} piece{wItems.length !== 1 ? "s" : ""}</div>
                       </div>
-                      <div style={{ textAlign: "right" }}>
-                        <div style={{ fontSize: 15, color: w.accent }}>${spend.toLocaleString()}</div>
-                        {editingBudgetId === w.id ? (
-                          <input autoFocus value={budgetDraft} onChange={e => setBudgetDraft(e.target.value)}
-                            onBlur={() => { setWardrobes(prev => prev.map(x => x.id === w.id ? { ...x, budget: Number(budgetDraft) } : x)); setEditingBudgetId(null); }}
-                            onKeyDown={e => e.key === "Enter" && e.target.blur()}
-                            style={{ width: 70, background: "none", border: "none", borderBottom: `1px solid ${w.accent}`, color: w.accent, fontSize: 10, textAlign: "right", padding: "1px 2px", outline: "none" }} />
-                        ) : (
-                          <div onClick={() => { setEditingBudgetId(w.id); setBudgetDraft(String(w.budget)); }}
-                            style={{ fontSize: 10, color: "#3a3a3a", cursor: "pointer", borderBottom: "1px dashed #2a2a2a" }}>
-                            ${w.budget?.toLocaleString()} budget
-                          </div>
-                        )}
+                      <div style={{ display: "flex", gap: 6, alignItems: "flex-start" }}>
+                        <div style={{ textAlign: "right" }}>
+                          <div style={{ fontSize: 15, color: w.accent }}>${spend.toLocaleString()}</div>
+                          {editingBudgetId === w.id ? (
+                            <input autoFocus value={budgetDraft} onChange={e => setBudgetDraft(e.target.value)}
+                              onBlur={() => { setWardrobes(prev => prev.map(x => x.id === w.id ? { ...x, budget: Number(budgetDraft) } : x)); setEditingBudgetId(null); }}
+                              onKeyDown={e => e.key === "Enter" && e.target.blur()}
+                              style={{ width: 70, background: "none", border: "none", borderBottom: `1px solid ${w.accent}`, color: w.accent, fontSize: 10, textAlign: "right", padding: "1px 2px", outline: "none" }} />
+                          ) : (
+                            <div onClick={() => { setEditingBudgetId(w.id); setBudgetDraft(String(w.budget)); }}
+                              style={{ fontSize: 10, color: "#3a3a3a", cursor: "pointer", borderBottom: "1px dashed #2a2a2a" }}>
+                              ${w.budget?.toLocaleString()} budget
+                            </div>
+                          )}
+                        </div>
+                        <div style={{ display: "flex", gap: 4, marginTop: 2 }}>
+                          <button onClick={() => startEditCollection(w)} style={{ background: "none", border: "1px solid #2a2a2a", color: "#555", borderRadius: 3, padding: "3px 7px", cursor: "pointer", fontSize: 11 }}>✏</button>
+                          <button onClick={() => setConfirmDelete(w)} style={{ background: "none", border: "1px solid #2a2a2a", color: "#c87878", borderRadius: 3, padding: "3px 7px", cursor: "pointer", fontSize: 11 }}>✕</button>
+                        </div>
                       </div>
+                    </div>
+                    <div style={{ marginBottom: 12 }}>
+                      {editingDescription === w.id ? (
+                        <div>
+                          <textarea value={descDraft} onChange={e => setDescDraft(e.target.value)} rows={3}
+                            style={{ width: "100%", background: "#060608", border: "1px solid #c9a84c44", color: "#a0a0a0", fontSize: 11, borderRadius: 3, padding: "6px 8px", resize: "none", outline: "none", boxSizing: "border-box", fontFamily: "Georgia, serif", lineHeight: 1.5 }} />
+                          <div style={{ display: "flex", gap: 6, marginTop: 5 }}>
+                            <button onClick={() => saveDescription(w.id)} style={{ padding: "4px 12px", borderRadius: 3, border: "none", background: "#c9a84c", color: "#0a0a0c", cursor: "pointer", fontSize: 10, fontWeight: 700 }}>Save</button>
+                            <button onClick={() => setEditingDescription(null)} style={{ padding: "4px 10px", borderRadius: 3, border: "1px solid #2a2a2a", background: "none", color: "#555", cursor: "pointer", fontSize: 10 }}>Cancel</button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div onClick={() => { setEditingDescription(w.id); setDescDraft(w.description || ""); }}
+                          style={{ fontSize: 11, color: w.description ? "#666" : "#333", lineHeight: 1.6, cursor: "pointer", borderLeft: `2px solid ${w.accent}33`, paddingLeft: 8, fontStyle: w.description ? "normal" : "italic", minHeight: 20 }}>
+                          {w.description || "Click to add a description..."}
+                        </div>
+                      )}
                     </div>
                     <div style={{ height: 2, background: "#181820", borderRadius: 1, marginBottom: 12, overflow: "hidden" }}>
                       <div style={{ height: "100%", width: `${pct}%`, background: pct > 90 ? "#c87878" : w.accent, transition: "width 0.4s" }} />
@@ -260,7 +341,7 @@ export default function WardrobeApp() {
         {/* Wardrobe Detail */}
         {activeWardrobe && activeWardrobeData && (
           <div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 16, flexWrap: "wrap", gap: 12 }}>
               <div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
                   <div style={{ width: 7, height: 7, borderRadius: "50%", background: activeWardrobeData.accent }} />
@@ -276,13 +357,16 @@ export default function WardrobeApp() {
                 </div>
               </div>
             </div>
-
-            {/* Filters */}
+            {activeWardrobeData.description && (
+              <div style={{ background: "#0d0d10", border: "1px solid #1a1a20", borderLeft: `3px solid ${activeWardrobeData.accent}`, borderRadius: 4, padding: "12px 16px", marginBottom: 20, fontSize: 12, color: "#666", lineHeight: 1.6, fontStyle: "italic" }}>
+                {activeWardrobeData.description}
+              </div>
+            )}
             <div style={{ display: "flex", gap: 6, marginBottom: 22, flexWrap: "wrap", alignItems: "center" }}>
               <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search..."
                 style={{ padding: "5px 10px", borderRadius: 3, border: "1px solid #1a1a20", background: "#0d0d10", color: "#e8e4dc", fontSize: 11, width: 140, outline: "none" }} />
               <div style={{ width: 1, height: 16, background: "#1a1a20" }} />
-              {OCCASION_TAGS.map(tag => (
+              {customTags.occasion.map(tag => (
                 <button key={tag} onClick={() => setFilterOccasion(filterOccasion === tag ? null : tag)}
                   style={{ padding: "4px 9px", borderRadius: 3, border: `1px solid ${filterOccasion === tag ? activeWardrobeData.accent : "#1a1a20"}`, background: filterOccasion === tag ? activeWardrobeData.accent + "18" : "none", color: filterOccasion === tag ? activeWardrobeData.accent : "#444", cursor: "pointer", fontSize: 10 }}>
                   {tag}
@@ -295,8 +379,6 @@ export default function WardrobeApp() {
                 </button>
               )}
             </div>
-
-            {/* Items Grid */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))", gap: 1, border: "1px solid #1a1a20", borderRadius: 4, overflow: "hidden" }}>
               {filteredItems().map(item => {
                 const picked = outfitPicks.find(i => i.id === item.id);
@@ -322,9 +404,7 @@ export default function WardrobeApp() {
                         <div style={{ fontSize: 12, color: "#e8e4dc", lineHeight: 1.3, flex: 1, marginRight: 6 }}>{item.name}</div>
                         <div style={{ fontSize: 14, color: activeWardrobeData.accent, flexShrink: 0 }}>${item.price}</div>
                       </div>
-                      <div style={{ fontSize: 10, color: "#3a3a3a", marginBottom: 7 }}>
-                        {(item.brand || [])[0] && <>{item.brand[0]} · </>}{item.type}
-                      </div>
+                      <div style={{ fontSize: 10, color: "#3a3a3a", marginBottom: 7 }}>{(item.brand || [])[0] && <>{item.brand[0]} · </>}{item.type}</div>
                       <div style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
                         {(item.occasion || []).slice(0, 2).map(o => <span key={o} style={{ background: "#141418", color: "#444", borderRadius: 2, padding: "2px 5px", fontSize: 9 }}>{o}</span>)}
                         {(item.season || []).slice(0, 1).map(s => <span key={s} style={{ background: "#141418", color: "#444", borderRadius: 2, padding: "2px 5px", fontSize: 9 }}>{s}</span>)}
@@ -339,8 +419,6 @@ export default function WardrobeApp() {
                   </div>
                 );
               })}
-
-              {/* Add tile */}
               <div onClick={() => { setNewItem({ ...BLANK_ITEM, wardrobeId: activeWardrobe }); setShowAddItem(true); }}
                 style={{ background: "#0a0a0c", borderBottom: "1px solid #1a1a20", borderRight: "1px solid #1a1a20", minHeight: 300, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", cursor: "pointer", gap: 8, transition: "background 0.18s" }}
                 onMouseEnter={e => e.currentTarget.style.background = "#0d0d10"}
@@ -353,7 +431,93 @@ export default function WardrobeApp() {
         )}
       </div>
 
-      {/* Add / Edit Modal */}
+      {/* TAG MANAGER MODAL */}
+      {showTagManager && (
+        <div style={{ position: "fixed", inset: 0, background: "#000000dd", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 200, padding: 16 }}>
+          <div style={{ background: "#0d0d10", border: "1px solid #1a1a20", borderRadius: 6, width: "100%", maxWidth: 620, maxHeight: "90vh", overflowY: "auto" }}>
+            <div style={{ padding: "18px 24px", borderBottom: "1px solid #1a1a20", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, background: "#0d0d10", zIndex: 1 }}>
+              <div style={{ fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: "#c9a84c" }}>Manage Tags</div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button onClick={resetTagsToDefault} style={{ padding: "4px 10px", borderRadius: 3, border: "1px solid #2a2a2a", background: "none", color: "#555", cursor: "pointer", fontSize: 10, letterSpacing: "0.08em" }}>Reset to defaults</button>
+                <button onClick={() => setShowTagManager(false)} style={{ background: "none", border: "none", color: "#333", cursor: "pointer", fontSize: 20 }}>×</button>
+              </div>
+            </div>
+            <div style={{ padding: "20px 24px" }}>
+              {Object.keys(customTags).map(category => (
+                <TagSection
+                  key={category}
+                  category={category}
+                  label={TAG_LABELS[category]}
+                  tags={customTags[category]}
+                  onAdd={(val) => addTag(category, val)}
+                  onRemove={(val) => removeTag(category, val)}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Collection Modal */}
+      {showCollectionModal && (
+        <div style={{ position: "fixed", inset: 0, background: "#000000dd", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 200, padding: 16 }}>
+          <div style={{ background: "#0d0d10", border: "1px solid #1a1a20", borderRadius: 6, width: "100%", maxWidth: 480 }}>
+            <div style={{ padding: "18px 24px", borderBottom: "1px solid #1a1a20", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: "#c9a84c" }}>{editingCollection ? "Edit Collection" : "New Collection"}</div>
+              <button onClick={() => { setShowCollectionModal(false); setEditingCollection(null); }} style={{ background: "none", border: "none", color: "#333", cursor: "pointer", fontSize: 20 }}>×</button>
+            </div>
+            <div style={{ padding: "20px 24px" }}>
+              <div style={{ marginBottom: 14 }}>
+                <div style={{ fontSize: 10, color: "#444", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 6 }}>Collection Name</div>
+                <input value={newCollection.name} onChange={e => setNewCollection(prev => ({ ...prev, name: e.target.value }))} placeholder="e.g. Summer in Nantucket"
+                  style={{ width: "100%", padding: "8px 12px", borderRadius: 3, border: "1px solid #1a1a20", background: "#060608", color: "#e8e4dc", fontSize: 13, boxSizing: "border-box", outline: "none" }} />
+              </div>
+              <div style={{ marginBottom: 14 }}>
+                <div style={{ fontSize: 10, color: "#444", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 6 }}>Description</div>
+                <textarea value={newCollection.description} onChange={e => setNewCollection(prev => ({ ...prev, description: e.target.value }))} rows={3}
+                  placeholder="Describe the vibe, what pieces belong, what occasions it's for..."
+                  style={{ width: "100%", padding: "8px 12px", borderRadius: 3, border: "1px solid #1a1a20", background: "#060608", color: "#e8e4dc", fontSize: 12, boxSizing: "border-box", outline: "none", resize: "none", fontFamily: "Georgia, serif", lineHeight: 1.5 }} />
+              </div>
+              <div style={{ marginBottom: 18 }}>
+                <div style={{ fontSize: 10, color: "#444", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 6 }}>Budget ($)</div>
+                <input type="number" value={newCollection.budget} onChange={e => setNewCollection(prev => ({ ...prev, budget: e.target.value }))} placeholder="0"
+                  style={{ width: "100%", padding: "8px 12px", borderRadius: 3, border: "1px solid #1a1a20", background: "#060608", color: "#e8e4dc", fontSize: 13, boxSizing: "border-box", outline: "none" }} />
+              </div>
+              <div style={{ marginBottom: 22 }}>
+                <div style={{ fontSize: 10, color: "#444", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 10 }}>Accent Color</div>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  {ACCENT_COLORS.map(c => (
+                    <div key={c} onClick={() => setNewCollection(prev => ({ ...prev, accent: c }))}
+                      style={{ width: 26, height: 26, borderRadius: "50%", background: c, cursor: "pointer", border: newCollection.accent === c ? "3px solid #e8e4dc" : "3px solid transparent", boxSizing: "border-box" }} />
+                  ))}
+                </div>
+              </div>
+              <button onClick={saveCollection}
+                style={{ width: "100%", padding: "11px 0", borderRadius: 3, border: "none", background: "#c9a84c", color: "#0a0a0c", cursor: "pointer", fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase" }}>
+                {editingCollection ? "Save Changes" : "Create Collection"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirm */}
+      {confirmDelete && (
+        <div style={{ position: "fixed", inset: 0, background: "#000000dd", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 300, padding: 16 }}>
+          <div style={{ background: "#0d0d10", border: "1px solid #c8787833", borderRadius: 6, width: "100%", maxWidth: 380, padding: "28px 28px" }}>
+            <div style={{ fontSize: 14, color: "#e8e4dc", marginBottom: 8 }}>Delete "{confirmDelete.name}"?</div>
+            <div style={{ fontSize: 12, color: "#666", marginBottom: 24, lineHeight: 1.5 }}>
+              This will permanently delete the collection and all {wardrobeItems(confirmDelete.id).length} piece{wardrobeItems(confirmDelete.id).length !== 1 ? "s" : ""} inside it.
+            </div>
+            <div style={{ display: "flex", gap: 10 }}>
+              <button onClick={doDeleteCollection} style={{ flex: 1, padding: "10px 0", borderRadius: 3, border: "none", background: "#c87878", color: "#fff", cursor: "pointer", fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" }}>Delete</button>
+              <button onClick={() => setConfirmDelete(null)} style={{ flex: 1, padding: "10px 0", borderRadius: 3, border: "1px solid #2a2a2a", background: "none", color: "#666", cursor: "pointer", fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase" }}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add / Edit Item Modal */}
       {showAddItem && (
         <div style={{ position: "fixed", inset: 0, background: "#000000dd", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 200, padding: 16 }}>
           <div style={{ background: "#0d0d10", border: "1px solid #1a1a20", borderRadius: 6, width: "100%", maxWidth: 560, maxHeight: "92vh", overflowY: "auto" }}>
@@ -362,8 +526,6 @@ export default function WardrobeApp() {
               <button onClick={resetForm} style={{ background: "none", border: "none", color: "#333", cursor: "pointer", fontSize: 20 }}>×</button>
             </div>
             <div style={{ padding: "20px 24px" }}>
-
-              {/* URL */}
               <div style={{ marginBottom: 18 }}>
                 <div style={{ fontSize: 10, color: "#444", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 7 }}>Product Link</div>
                 <div style={{ display: "flex", gap: 8 }}>
@@ -378,14 +540,12 @@ export default function WardrobeApp() {
                 </div>
                 {urlError && <div style={{ fontSize: 11, color: "#c87878", marginTop: 5 }}>{urlError}</div>}
               </div>
-
               {newItem.image && (
                 <div style={{ marginBottom: 16 }}>
                   <img src={newItem.image} alt="" onError={e => e.target.style.display = "none"}
                     style={{ width: "100%", height: 150, objectFit: "contain", borderRadius: 3, background: "#060608", border: "1px solid #1a1a20" }} />
                 </div>
               )}
-
               <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 10, marginBottom: 14 }}>
                 {[{ l: "Item Name", k: "name", t: "text", ph: "e.g. Merino Crewneck" }, { l: "Price ($)", k: "price", t: "number", ph: "0" }].map(f => (
                   <div key={f.k}>
@@ -395,7 +555,6 @@ export default function WardrobeApp() {
                   </div>
                 ))}
               </div>
-
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 18 }}>
                 <div>
                   <div style={{ fontSize: 10, color: "#444", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 6 }}>Type</div>
@@ -405,7 +564,7 @@ export default function WardrobeApp() {
                   </select>
                 </div>
                 <div>
-                  <div style={{ fontSize: 10, color: "#444", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 6 }}>Wardrobe</div>
+                  <div style={{ fontSize: 10, color: "#444", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 6 }}>Collection</div>
                   <select value={newItem.wardrobeId || activeWardrobe || wardrobes[0].id}
                     onChange={e => setNewItem(prev => ({ ...prev, wardrobeId: Number(e.target.value) }))}
                     style={{ width: "100%", padding: "8px 10px", borderRadius: 3, border: "1px solid #1a1a20", background: "#060608", color: "#e8e4dc", fontSize: 12 }}>
@@ -413,21 +572,14 @@ export default function WardrobeApp() {
                   </select>
                 </div>
               </div>
-
-              {[
-                { label: "Occasion", key: "occasion", tags: OCCASION_TAGS },
-                { label: "Season", key: "season", tags: SEASON_TAGS },
-                { label: "Vibe", key: "vibe", tags: VIBE_TAGS },
-                { label: "Color", key: "color", tags: COLOR_TAGS },
-                { label: "Brand", key: "brand", tags: BRAND_TAGS },
-              ].map(sec => (
-                <div key={sec.key} style={{ marginBottom: 16 }}>
-                  <div style={{ fontSize: 10, color: "#444", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 7 }}>{sec.label}</div>
+              {Object.keys(customTags).map(key => (
+                <div key={key} style={{ marginBottom: 16 }}>
+                  <div style={{ fontSize: 10, color: "#444", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 7 }}>{TAG_LABELS[key]}</div>
                   <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
-                    {sec.tags.map(tag => {
-                      const on = (newItem[sec.key] || []).includes(tag);
+                    {customTags[key].map(tag => {
+                      const on = (newItem[key] || []).includes(tag);
                       return (
-                        <button key={tag} onClick={() => toggleTag(sec.key, tag)}
+                        <button key={tag} onClick={() => toggleTag(key, tag)}
                           style={{ padding: "4px 9px", borderRadius: 3, border: `1px solid ${on ? "#c9a84c" : "#1a1a20"}`, background: on ? "#c9a84c15" : "none", color: on ? "#c9a84c" : "#3a3a3a", cursor: "pointer", fontSize: 11 }}>
                           {tag}
                         </button>
@@ -436,7 +588,6 @@ export default function WardrobeApp() {
                   </div>
                 </div>
               ))}
-
               <button onClick={saveItem}
                 style={{ width: "100%", padding: "11px 0", borderRadius: 3, border: "none", background: "#c9a84c", color: "#0a0a0c", cursor: "pointer", fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", marginTop: 6 }}>
                 {editingItem ? "Save Changes" : "Add to Wardrobe"}
@@ -446,9 +597,36 @@ export default function WardrobeApp() {
         </div>
       )}
 
-      <style>{`
-        .item-card:hover .item-actions { opacity: 1 !important; }
-      `}</style>
+      <style>{`.item-card:hover .item-actions { opacity: 1 !important; }`}</style>
+    </div>
+  );
+}
+
+// Tag Section Component
+function TagSection({ category, label, tags, onAdd, onRemove }) {
+  const [newTag, setNewTag] = useState("");
+  return (
+    <div style={{ marginBottom: 24 }}>
+      <div style={{ fontSize: 10, color: "#c9a84c", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 10 }}>{label}</div>
+      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
+        {tags.map(tag => (
+          <div key={tag} style={{ display: "flex", alignItems: "center", gap: 4, background: "#151518", border: "1px solid #2a2a2a", borderRadius: 3, padding: "3px 4px 3px 9px" }}>
+            <span style={{ fontSize: 11, color: "#888" }}>{tag}</span>
+            <button onClick={() => onRemove(tag)}
+              style={{ background: "none", border: "none", color: "#c87878", cursor: "pointer", fontSize: 13, lineHeight: 1, padding: "0 2px", display: "flex", alignItems: "center" }}>×</button>
+          </div>
+        ))}
+      </div>
+      <div style={{ display: "flex", gap: 8 }}>
+        <input value={newTag} onChange={e => setNewTag(e.target.value)}
+          onKeyDown={e => { if (e.key === "Enter" && newTag.trim()) { onAdd(newTag.trim()); setNewTag(""); } }}
+          placeholder={`Add ${label.toLowerCase()} tag...`}
+          style={{ flex: 1, padding: "6px 10px", borderRadius: 3, border: "1px solid #1a1a20", background: "#060608", color: "#e8e4dc", fontSize: 12, outline: "none" }} />
+        <button onClick={() => { if (newTag.trim()) { onAdd(newTag.trim()); setNewTag(""); } }}
+          style={{ padding: "6px 14px", borderRadius: 3, border: "none", background: "#1e1e28", color: "#c9a84c", cursor: "pointer", fontSize: 11, fontWeight: 700 }}>
+          + Add
+        </button>
+      </div>
     </div>
   );
 }
